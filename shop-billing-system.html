@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Billing System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --success-color: #4cc9f0;
+            --light-bg: #f8f9fa;
+            --dark-bg: #212529;
+            --card-radius: 16px;
+            --shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] {
+            --light-bg: #121212;
+            --dark-bg: #e0e0e0;
+            --primary-color: #5e72e4;
+            --secondary-color: #7b87f1;
+            --success-color: #63d3ff;
+            --shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-top: 20px;
+            transition: var(--transition);
+            color: var(--dark-bg);
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .card {
+            border: none;
+            border-radius: var(--card-radius);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            margin-bottom: 24px;
+            overflow: hidden;
+            background-color: var(--light-bg);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            background: linear-gradient(120deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            font-weight: 600;
+            border-radius: var(--card-radius) var(--card-radius) 0 0 !important;
+            padding: 15px 20px;
+        }
+
+        .quick-action-card {
+            height: 100%;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .quick-action-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 15px;
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary-color);
+        }
+
+        .stats-number {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .stats-label {
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .module-card {
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .module-card:hover {
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+
+        .module-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary-color);
+            margin-right: 15px;
+        }
+
+        .badge {
+            font-weight: 500;
+            padding: 6px 10px;
+            border-radius: 20px;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color) !important;
+        }
+
+        .theme-selector {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .theme-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: var(--transition);
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff4757;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-box {
+            position: relative;
+            max-width: 300px;
+        }
+
+        .search-input {
+            border-radius: 50px;
+            padding-left: 45px;
+            border: 1px solid #dee2e6;
+            transition: var(--transition);
+        }
+
+        .search-input:focus {
+            box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
+            border-color: var(--primary-color);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+
+        /* Calculator Modal */
+        .calculator-modal {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1050;
+            width: 300px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transform: translateY(calc(100% + 20px));
+            transition: transform 0.4s ease;
+        }
+
+        .calculator-modal.show {
+            transform: translateY(0);
+        }
+
+        .calculator-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 12px 15px;
+            border-radius: 12px 12px 0 0;
+            cursor: move;
+        }
+
+        .calculator-body {
+            padding: 15px;
+        }
+
+        .calc-btn {
+            width: 100%;
+            height: 45px;
+            font-size: 18px;
+        }
+
+        .calc-display {
+            font-size: 24px;
+            height: 50px;
+            text-align: right;
+            padding: 0 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+        }
+
+        /* Print Styles */
+        @media print {
+            body * {
+                visibility: hidden;
+                background: white !important;
+                color: black !important;
+            }
+            .print-section, .print-section * {
+                visibility: visible;
+            }
+            .print-section {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+
+        /* Animation classes */
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-in;
+        }
+
+        .animate-slide-in {
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .stats-number {
+                font-size: 22px;
+            }
+            
+            .quick-action-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+            
+            .calculator-modal {
+                width: 280px;
+                left: 10px;
+                bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="assets/images/logo.png" alt="Logo" height="30" class="d-inline-block align-text-top me-2">
+                ShopBilling Pro
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#"><i class="fas fa-home me-1"></i> Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="modules/billing/"><i class="fas fa-file-invoice me-1"></i> Bills</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="modules/stock/"><i class="fas fa-cube me-1"></i> Products</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="modules/reports/"><i class="fas fa-chart-line me-1"></i> Reports</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <div class="search-box me-3">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" class="form-control search-input" placeholder="Search...">
+                    </div>
+                    <button class="btn btn-outline-primary me-2" id="calculator-toggle">
+                        <i class="fas fa-calculator"></i>
+                    </button>
+                    <div class="dropdown me-2">
+                        <button class="btn btn-light position-relative" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge">3</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#">Low stock alert: 5 products</a></li>
+                            <li><a class="dropdown-item" href="#">New bill created</a></li>
+                            <li><a class="dropdown-item" href="#">System update available</a></li>
+                        </ul>
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i> Admin
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="modules/settings/"><i class="fas fa-cog me-2"></i> Settings</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i> Profile</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" id="logout-btn"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <div class="container">
+            <!-- Quick Stats Row -->
+            <div class="row mb-4">
+                <div class="col-md-3 mb-3 animate-fade-in">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <div class="stats-number">₹12,548</div>
+                            <div class="stats-label">Today's Sales</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3 animate-fade-in" style="animation-delay: 0.1s;">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <div class="stats-number">18</div>
+                            <div class="stats-label">Today's Bills</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3 animate-fade-in" style="animation-delay: 0.2s;">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <div class="stats-number">7</div>
+                            <div class="stats-label">Low Stock Items</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3 animate-fade-in" style="animation-delay: 0.3s;">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <div class="stats-number">5</div>
+                            <div class="stats-label">New Customers</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-bolt me-2"></i>Quick Actions</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3 col-6 mb-3 animate-slide-in">
+                                    <div class="card quick-action-card">
+                                        <div class="card-body text-center">
+                                            <div class="quick-action-icon mx-auto">
+                                                <i class="fas fa-receipt"></i>
+                                            </div>
+                                            <h6>Create New Bill</h6>
+                                            <p class="text-muted small">Generate a new invoice</p>
+                                            <a href="modules/billing/new_bill.php" class="btn btn-sm btn-primary">Go</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-6 mb-3 animate-slide-in" style="animation-delay: 0.1s;">
+                                    <div class="card quick-action-card">
+                                        <div class="card-body text-center">
+                                            <div class="quick-action-icon mx-auto">
+                                                <i class="fas fa-box"></i>
+                                            </div>
+                                            <h6>Add Product</h6>
+                                            <p class="text-muted small">Add new inventory item</p>
+                                            <a href="modules/stock/add_product.php" class="btn btn-sm btn-primary">Go</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-6 mb-3 animate-slide-in" style="animation-delay: 0.2s;">
+                                    <div class="card quick-action-card">
+                                        <div class="card-body text-center">
+                                            <div class="quick-action-icon mx-auto">
+                                                <i class="fas fa-file-invoice"></i>
+                                            </div>
+                                            <h6>Generate Report</h6>
+                                            <p class="text-muted small">Create sales reports</p>
+                                            <a href="modules/reports/sales_report.php" class="btn btn-sm btn-primary">Go</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-6 mb-3 animate-slide-in" style="animation-delay: 0.3s;">
+                                    <div class="card quick-action-card">
+                                        <div class="card-body text-center">
+                                            <div class="quick-action-icon mx-auto">
+                                                <i class="fas fa-sync-alt"></i>
+                                            </div>
+                                            <h6>Update Stock</h6>
+                                            <p class="text-muted small">Manage inventory</p>
+                                            <a href="modules/stock/" class="btn btn-sm btn-primary">Go</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Bills and Stock Alerts -->
+            <div class="row">
+                <!-- Recent Bills -->
+                <div class="col-lg-8 mb-4">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="fas fa-file-invoice me-2"></i>Recent Bills</h5>
+                            <a href="modules/billing/bill_history.php" class="btn btn-sm btn-outline-primary">View All</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Bill No</th>
+                                            <th>Customer</th>
+                                            <th>Amount</th>
+                                            <th>Date</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>BILL-20231115-1234</td>
+                                            <td>Ramesh Kumar</td>
+                                            <td>₹2,548</td>
+                                            <td>15 Nov 2023</td>
+                                            <td><span class="badge bg-success">Paid</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>BILL-20231115-1233</td>
+                                            <td>Suresh Babu</td>
+                                            <td>₹1,245</td>
+                                            <td>15 Nov 2023</td>
+                                            <td><span class="badge bg-success">Paid</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>BILL-20231115-1232</td>
+                                            <td>Walk-in Customer</td>
+                                            <td>₹845</td>
+                                            <td>15 Nov 2023</td>
+                                            <td><span class="badge bg-success">Paid</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>BILL-20231114-1231</td>
+                                            <td>Mohan Lal</td>
+                                            <td>₹3,245</td>
+                                            <td>14 Nov 2023</td>
+                                            <td><span class="badge bg-warning">Pending</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>BILL-20231114-1230</td>
+                                            <td>Anita Sharma</td>
+                                            <td>₹1,850</td>
+                                            <td>14 Nov 2023</td>
+                                            <td><span class="badge bg-success">Paid</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stock Alerts -->
+                <div class="col-lg-4 mb-4">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Stock Alerts</h5>
+                            <a href="modules/stock/stock_alerts.php" class="btn btn-sm btn-outline-warning">Manage</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="list-group">
+                                <a href="modules/stock/" class="list-group-item list-group-item-action">
+                                    <div class="d-flex justify-content-between">
+                                        <h6 class="mb-1">Premium Rice 5kg</h6>
+                                        <span class="badge bg-danger">Low</span>
+                                    </div>
+                                    <p class="mb-1 text-muted">Current stock: 8 units</p>
+                                    <small>Alert level: 10 units</small>
+                                </a>
+                                <a href="modules/stock/" class="list-group-item list-group-item-action">
+                                    <div class="d-flex justify-content-between">
+                                        <h6 class="mb-1">Sunflower Oil 1L</h6>
+                                        <span class="badge bg-danger">Low</span>
+                                    </div>
+                                    <p class="mb-1 text-muted">Current stock: 5 units</p>
+                                    <small>Alert level: 15 units</small>
+                                </a>
+                                <a href="modules/stock/" class="list-group-item list-group-item-action">
+                                    <div class="d-flex justify-content-between">
+                                        <h6 class="mb-1">Wheat Flour 2kg</h6>
+                                        <span class="badge bg-warning">Medium</span>
+                                    </div>
+                                    <p class="mb-1 text-muted">Current stock: 12 units</p>
+                                    <small>Alert level: 20 units</small>
+                                </a>
+                                <a href="modules/stock/" class="list-group-item list-group-item-action">
+                                    <div class="d-flex justify-content-between">
+                                        <h6 class="mb-1">Sugar 1kg</h6>
+                                        <span class="badge bg-warning">Medium</span>
+                                    </div>
+                                    <p class="mb-1 text-muted">Current stock: 9 units</p>
+                                    <small>Alert level: 25 units</small>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Other Modules -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-th me-2"></i>Other Modules</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3 col-6 mb-3">
+                                    <a href="modules/customers/" class="text-decoration-none">
+                                        <div class="card module-card">
+                                            <div class="card-body d-flex align-items-center">
+                                                <div class="module-icon">
+                                                    <i class="fas fa-users"></i>
+                                                </div>
+                                                <div>
+                                                    <h6 class="mb-0">Customers</h6>
+                                                    <p class="text-muted small mb-0">Manage customers</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-md-3 col-6 mb-3">
+                                    <a href="modules/reports/" class="text-decoration-none">
+                                        <div class="card module-card">
+                                            <div class="card-body d-flex align-items-center">
+                                                <div class="module-icon">
+                                                    <i class="fas fa-chart-pie"></i>
+                                                </div>
+                                                <div>
+                                                    <h6 class="mb-0">Reports</h6>
+                                                    <p class="text-muted small mb-0">View reports</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-md-3 col-6 mb-3">
+                                    <a href="modules/settings/" class="text-decoration-none">
+                                        <div class="card module-card">
+                                            <div class="card-body d-flex align-items-center">
+                                                <div class="module-icon">
+                                                    <i class="fas fa-cog"></i>
+                                                </div>
+                                                <div>
+                                                    <h6 class="mb-0">Settings</h6>
+                                                    <p class="text-muted small mb-0">System settings</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-md-3 col-6 mb-3">
+                                    <a href="modules/reports/sales_history.php" class="text-decoration-none">
+                                        <div class="card module-card">
+                                            <div class="card-body d-flex align-items-center">
+                                                <div class="module-icon">
+                                                    <i class="fas fa-history"></i>
+                                                </div>
+                                                <div>
+                                                    <h6 class="mb-0">Sales History</h6>
+                                                    <p class="text-muted small mb-0">View past sales</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Calculator Modal -->
+    <div class="calculator-modal" id="calculator-modal">
+        <div class="calculator-header d-flex justify-content-between align-items-center">
+            <span><i class="fas fa-calculator me-2"></i>Calculator</span>
+            <button type="button" class="btn-close btn-close-white" id="close-calculator"></button>
+        </div>
+        <div class="calculator-body">
+            <div class="calc-display mb-2" id="calc-display">0</div>
+            <div class="row mb-2">
+                <div class="col-3"><button class="btn btn-secondary calc-btn" data-value="7">7</button></div>
+                <div class="col-3"><button class="btn btn-secondary calc-btn" data-value="8">8</button></div>
+                <div class="col-3"><button class="btn btn-secondary calc-btn" data-value="9">9</button></div>
+                <div class="col-3"><button class="btn btn-danger calc-btn" id="calc-clear">C</button></div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-3"><button class="btn btn-secondary calc-btn" data-value="4">4</button></div>
+                <div class="col-3"><button class="btn btn-secondary calc-btn" data-value="5">5</button></div>
+                <div class="col-3"><button class="btn btn-secondary calc-btn" data-value="6">6</button></div>
+                <div class="col-3"><button class="btn btn-primary calc-btn" data-operator="+">+</button></div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-3"><button class="btn btn-secondary calc-btn" data-value="1">1</button></div>
+                <div class="col-3"><button class="btn btn-secondary calc-btn" data-value="2">2</button></div>
+                <div class="col-3"><button class="btn btn-secondary calc-btn" data-value="3">3</button></div>
+                <div class="col-3"><button class="btn btn-primary calc-btn" data-operator="-">-</button></div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-3"><button class="btn btn-secondary calc-btn" data-value="0">0</button></div>
+                <div class="col-3"><button class="btn btn-secondary calc-btn" data-value=".">.</button></div>
+                <div class="col-3"><button class="btn btn-primary calc-btn" id="calc-equals">=</button></div>
+                <div class="col-3"><button class="btn btn-primary calc-btn" data-operator="*">×</button></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Theme Selector -->
+    <div class="theme-selector">
+        <div class="theme-btn" id="theme-toggle">
+            <i class="fas fa-palette"></i>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Theme toggle functionality
+            const themeToggle = document.getElementById('theme-toggle');
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            
+            // Apply saved theme
+            if (currentTheme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            }
+            
+            themeToggle.addEventListener('click', function() {
+                if (document.body.getAttribute('data-theme') === 'dark') {
+                    document.body.removeAttribute('data-theme');
+                    localStorage.setItem('theme', 'light');
+                    themeToggle.innerHTML = '<i class="fas fa-palette"></i>';
+                } else {
+                    document.body.setAttribute('data-theme', 'dark');
+                    localStorage.setItem('theme', 'dark');
+                    themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+                }
+            });
+
+            // Calculator functionality
+            const calculatorToggle = document.getElementById('calculator-toggle');
+            const calculatorModal = document.getElementById('calculator-modal');
+            const closeCalculator = document.getElementById('close-calculator');
+            const calcDisplay = document.getElementById('calc-display');
+            const calcClear = document.getElementById('calc-clear');
+            const calcEquals = document.getElementById('calc-equals');
+            const calcButtons = document.querySelectorAll('.calc-btn[data-value], .calc-btn[data-operator]');
+            
+            let currentInput = '0';
+            let previousInput = null;
+            let operation = null;
+            let shouldResetScreen = false;
+            
+            calculatorToggle.addEventListener('click', function() {
+                calculatorModal.classList.toggle('show');
+            });
+            
+            closeCalculator.addEventListener('click', function() {
+                calculatorModal.classList.remove('show');
+            });
+            
+            calcClear.addEventListener('click', function() {
+                currentInput = '0';
+                previousInput = null;
+                operation = null;
+                updateDisplay();
+            });
+            
+            calcButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    if (this.dataset.value) {
+                        inputNumber(this.dataset.value);
+                    } else if (this.dataset.operator) {
+                        inputOperator(this.dataset.operator);
+                    }
+                });
+            });
+            
+            calcEquals.addEventListener('click', function() {
+                calculate();
+            });
+            
+            function inputNumber(number) {
+                if (currentInput === '0' || shouldResetScreen) {
+                    currentInput = number;
+                    shouldResetScreen = false;
+                } else {
+                    currentInput += number;
+                }
+                updateDisplay();
+            }
+            
+            function inputOperator(op) {
+                if (operation !== null) calculate();
+                previousInput = currentInput;
+                operation = op;
+                shouldResetScreen = true;
+            }
+            
+            function calculate() {
+                let computation;
+                const prev = parseFloat(previousInput);
+                const current = parseFloat(currentInput);
+                
+                if (isNaN(prev) || isNaN(current)) return;
+                
+                switch (operation) {
+                    case '+':
+                        computation = prev + current;
+                        break;
+                    case '-':
+                        computation = prev - current;
+                        break;
+                    case '*':
+                        computation = prev * current;
+                        break;
+                    case '/':
+                        computation = prev / current;
+                        break;
+                    default:
+                        return;
+                }
+                
+                currentInput = computation.toString();
+                operation = null;
+                previousInput = null;
+                updateDisplay();
+            }
+            
+            function updateDisplay() {
+                calcDisplay.textContent = currentInput;
+            }
+
+            // Animation on scroll
+            const animatedElements = document.querySelectorAll('.animate-fade-in, .animate-slide-in');
+            
+            function checkScroll() {
+                animatedElements.forEach(element => {
+                    const elementPosition = element.getBoundingClientRect().top;
+                    const screenPosition = window.innerHeight / 1.3;
+                    
+                    if (elementPosition < screenPosition) {
+                        element.style.opacity = 1;
+                        element.style.transform = 'translateY(0)';
+                    }
+                });
+            }
+            
+            // Set initial state for animation
+            animatedElements.forEach(element => {
+                element.style.opacity = 0;
+                element.style.transform = 'translateY(20px)';
+                element.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            });
+            
+            window.addEventListener('scroll', checkScroll);
+            checkScroll(); // Check on initial load
+
+            // Logout functionality
+            document.getElementById('logout-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                if (confirm('Are you sure you want to logout?')) {
+                    // Perform logout action (redirect to logout page)
+                    window.location.href = 'includes/logout.php';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
