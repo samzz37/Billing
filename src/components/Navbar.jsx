@@ -23,5 +23,7 @@ const Navbar = () => {
     { path: '/billing', icon: FileText, label: 'Billing' },
     { path: '/bills', icon: FileText, label: 'Bills' },
     { path: '/clients', icon: Users, label: 'Clients' },
+  ]
+}
 
 export default Navbar
